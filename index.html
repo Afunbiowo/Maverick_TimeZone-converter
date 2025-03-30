@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Zone Converter</title>
+    <title>TimeSync - Global Time Zone Converter</title>
     <style>
         :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #166088;
-            --background-color: #f5f7fa;
+            --primary-color: #3a6ea5;
+            --secondary-color: #004e92;
+            --accent-color: #ff6b6b;
+            --background-color: #f7f9fc;
             --card-color: #ffffff;
             --text-color: #333333;
+            --text-light: #f7f9fc;
             --border-radius: 8px;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --gradient-start: #004e92;
+            --gradient-end: #3a6ea5;
         }
 
         body {
@@ -23,16 +27,73 @@
             color: var(--text-color);
         }
 
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--text-light);
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .clock-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .clock {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .app-title {
+            font-size: 2.8rem;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-slogan {
+            font-size: 1.2rem;
+            margin: 10px 0 0;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .globe-icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--secondary-color);
-            margin-bottom: 30px;
         }
 
         .card {
@@ -41,6 +102,17 @@
             box-shadow: var(--shadow);
             padding: 25px;
             margin-bottom: 20px;
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .section-title {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
         }
 
         .input-section {
@@ -62,14 +134,21 @@
         }
 
         input, select {
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.1);
         }
 
         button {
-            background-color: var(--primary-color);
+            background-color: var(--accent-color);
             color: white;
             border: none;
             padding: 12px 20px;
@@ -77,11 +156,20 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         button:hover {
-            background-color: var(--secondary-color);
+            background-color: #ff5252;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
         }
 
         .time-zones {
@@ -95,10 +183,16 @@
             background-color: var(--card-color);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            transition: transform 0.2s;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .time-zone-card:hover {
+            transform: translateY(-3px);
         }
 
         .time-zone-name {
@@ -110,6 +204,7 @@
         .time-zone-time {
             font-size: 24px;
             font-weight: 700;
+            color: var(--primary-color);
         }
 
         .time-zone-date {
@@ -140,14 +235,31 @@
             .timezone-selection {
                 grid-template-columns: 1fr;
             }
+
+            .app-title {
+                font-size: 2rem;
+            }
+
+            .app-slogan {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="clock-icons">
+            <!-- Clock icons dynamically generated by JS -->
+        </div>
+        <div class="header-content">
+            <h1 class="app-title">⌚ TimeSync</h1>
+            <p class="app-slogan">Synchronize your life across all time zones</p>
+        </div>
+    </header>
+
     <div class="container">
-        <h1>Time Zone Converter</h1>
-        
         <div class="card">
+            <h2 class="section-title">Your Time Settings</h2>
             <div class="input-section">
                 <div class="input-group">
                     <label for="source-timezone">Your Time Zone</label>
@@ -161,11 +273,17 @@
                     <input type="datetime-local" id="current-time">
                 </div>
                 
-                <button id="use-current-time">Use Current Time</button>
+                <button id="use-current-time">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Use Current Time
+                </button>
             </div>
             
+            <h2 class="section-title">Destination Time Zones</h2>
             <div class="selection-area">
-                <label>Select 5 Time Zones to Display:</label>
                 <div class="timezone-selection" id="timezone-dropdowns">
                     <!-- Time zone dropdowns will be dynamically populated -->
                 </div>
@@ -197,6 +315,9 @@
                 { id: 'America/Sao_Paulo', name: 'Brasilia Time - São Paulo' },
                 { id: 'Asia/Singapore', name: 'Singapore Time - Singapore' }
             ];
+
+            // Generate decorative clocks for the header
+            generateDecorativeClocks();
 
             // Number of time zone selections
             const NUM_SELECTIONS = 5;
@@ -235,6 +356,29 @@
             updateTimeZones();
             
             // Functions
+            function generateDecorativeClocks() {
+                const clockIcons = document.querySelector('.clock-icons');
+                const numClocks = 8;
+                
+                for (let i = 0; i < numClocks; i++) {
+                    const clock = document.createElement('div');
+                    clock.className = 'clock';
+                    
+                    // Random size between 30px and 60px
+                    const size = Math.floor(Math.random() * 30) + 30;
+                    clock.style.width = `${size}px`;
+                    clock.style.height = `${size}px`;
+                    
+                    // Random position
+                    const top = Math.floor(Math.random() * 100);
+                    const left = Math.floor(Math.random() * 100);
+                    clock.style.top = `${top}%`;
+                    clock.style.left = `${left}%`;
+                    
+                    clockIcons.appendChild(clock);
+                }
+            }
+
             function setCurrentDateTime() {
                 const now = new Date();
                 const year = now.getFullYear();
